@@ -25,19 +25,27 @@ const Metronome = () => {
   };
 
   return (
-    <div className="metronome">
-      <h1>Metronome</h1>
-      <h2>Tempo: {tempo} BPM</h2>
-      <p>
+    <div className="bg-white shadow-lg rounded-lg mx-auto p-4 max-w-screen-sm">
+      <h1 className="text-2xl font-medium border-b">Metronome</h1>
+      <div className="my-4">
+        <h2>Tempo: {tempo} BPM</h2>
         <input
+          className="w-full"
           type="range"
           min="40"
           max="200"
           value={tempo}
           onChange={(event) => handleTempoChange(event.target.value)}
         />
-      </p>
-      <button onClick={toggleTimer}>{timer ? "■ Stop" : "► Play"}</button>
+      </div>
+      <div className="flex">
+        <button
+          className="border rounded-lg px-2 py-1 text-gray-700 shadow mx-auto w-32"
+          onClick={toggleTimer}
+        >
+          {timer ? "■ Stop" : "► Play"}
+        </button>
+      </div>
     </div>
   );
 };
