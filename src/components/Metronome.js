@@ -3,7 +3,8 @@ import React, { useState, useEffect } from "react";
 import Rhythm from "./Rhythm";
 import Slider from "./Slider";
 import IntegerInput from "./IntegerInput";
-import { beep, PlaySVG, StopSVG } from "../utils";
+import Checkbox from "./Checkbox";
+import { beep, PlaySVG, StopSVG, stress } from "../utils";
 
 import { bpmToTempo } from "../tempo";
 
@@ -12,6 +13,7 @@ const Metronome = () => {
   const [count, setCount] = useState(-1);
   const [playing, setPlaying] = useState(false);
   const [size, setSize] = useState(4);
+  const [stressed, setStressed] = useState(true);
 
   const bpmToMs = (bpm) => Math.round(60000 / bpm);
 
@@ -21,12 +23,18 @@ const Metronome = () => {
 
   const handleSizeChange = (newSize) => setSize(newSize);
 
+  const handleStressChange = (newStressed) => setStressed(newStressed);
+
   useEffect(() => {
     let timer = null;
 
     const onTick = () => {
+      if (stressed && (count === -1 || count === size - 1)) {
+        stress();
+      } else {
+        beep();
+      }
       setCount((count + 1) % size);
-      beep();
     };
 
     if (playing) {
@@ -40,7 +48,7 @@ const Metronome = () => {
     }
 
     return () => clearTimeout(timer);
-  }, [playing, count, tempo, size]);
+  }, [playing, count, tempo, size, stressed]);
 
   return (
     <div className="bg-white shadow-lg rounded-lg mx-auto p-4 max-w-screen-sm">
@@ -73,6 +81,13 @@ const Metronome = () => {
         >
           {playing ? <StopSVG /> : <PlaySVG />}
         </button>
+        <div className="w-1/4">
+          <Checkbox
+            label="STRESS THE FIRST BEAT"
+            checked={stressed}
+            onChange={handleStressChange}
+          />
+        </div>
       </div>
     </div>
   );

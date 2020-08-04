@@ -17,12 +17,8 @@ const IntegerInput = ({ min, max, value, onChange, label }) => {
 
   return (
     <div className="text-blue-900">
-      {label && (
-        <div className="text-center text-xs font-bold tracking-widest">
-          {label}
-        </div>
-      )}
-      <div className="flex items-center justify-between text-2xl">
+      {label && <div className="text-center text-xs font-bold">{label}</div>}
+      <div className="flex items-center select-none justify-between text-2xl">
         <Btn disabled={min >= value} onClick={handleDecrement}>
           <LeftSVG />
         </Btn>
