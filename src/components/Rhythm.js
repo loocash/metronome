@@ -11,7 +11,7 @@ const range = (from, to) => {
   return xs;
 };
 
-const Rhythm = ({ count, size }) => {
+const Rhythm = ({ count, beats }) => {
   const Circle = ({ active }) => (
     <div
       className={`h-8 w-8 rounded-full ${
@@ -22,7 +22,7 @@ const Rhythm = ({ count, size }) => {
 
   return (
     <div className="flex justify-around">
-      {range(0, size - 1).map((i) => (
+      {range(0, beats - 1).map((i) => (
         <Circle key={i} active={count === i} />
       ))}
     </div>

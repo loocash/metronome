@@ -12,43 +12,43 @@ const Metronome = () => {
   const [tempo, setTempo] = useState(145);
   const [count, setCount] = useState(-1);
   const [playing, setPlaying] = useState(false);
-  const [size, setSize] = useState(4);
+  const [beats, setBeats] = useState(4);
   const [stressed, setStressed] = useState(true);
 
   const bpmToMs = (bpm) => Math.round(60000 / bpm);
 
-  const toggle = () => setPlaying(!playing);
+  const toggle = () => setPlaying((p) => !p);
 
   const handleTempoChange = (newTempo) => setTempo(newTempo);
 
-  const handleSizeChange = (newSize) => setSize(newSize);
+  const handleBeatsChange = (newBeats) => setBeats(newBeats);
 
-  const handleStressChange = (newStressed) => setStressed(newStressed);
+  const toggleStress = () => setStressed((s) => !s);
 
   useEffect(() => {
     let timer = null;
 
-    const onTick = () => {
-      if (stressed && (count === -1 || count === size - 1)) {
-        stress();
-      } else {
-        beep();
-      }
-      setCount((count + 1) % size);
-    };
-
     if (playing) {
-      clearTimeout(timer);
-      timer = setTimeout(onTick, bpmToMs(tempo));
-      if (count === -1) {
-        onTick();
-      }
+      timer = setInterval(
+        () => setCount((c) => (c + 1) % beats),
+        bpmToMs(tempo)
+      );
     } else {
       setCount(-1);
     }
 
-    return () => clearTimeout(timer);
-  }, [playing, count, tempo, size, stressed]);
+    return () => clearInterval(timer);
+  }, [playing, tempo, beats]);
+
+  useEffect(() => {
+    if (playing && count > -1) {
+      if (stressed && count === 0) {
+        stress();
+      } else {
+        beep();
+      }
+    }
+  }, [count, stressed, playing]);
 
   return (
     <div className="bg-white shadow-lg rounded-lg mx-auto p-4 max-w-screen-sm">
@@ -63,7 +63,7 @@ const Metronome = () => {
         <Slider min={20} max={260} value={tempo} onChange={handleTempoChange} />
       </div>
       <div className="my-8">
-        <Rhythm count={count} size={size} />
+        <Rhythm count={count} beats={beats} />
       </div>
       <div className="flex items-center justify-around">
         <div className="w-1/4">
@@ -71,8 +71,8 @@ const Metronome = () => {
             label="BEATS"
             min={2}
             max={12}
-            value={size}
-            onChange={handleSizeChange}
+            value={beats}
+            onChange={handleBeatsChange}
           />
         </div>
         <button
@@ -85,7 +85,7 @@ const Metronome = () => {
           <Checkbox
             label="STRESS THE FIRST BEAT"
             checked={stressed}
-            onChange={handleStressChange}
+            onChange={toggleStress}
           />
         </div>
       </div>
